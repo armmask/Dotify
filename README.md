@@ -7,4 +7,4 @@ I would say it is the OG Spotify.
 1,4,5
 
 ## Screenshots
-![This is a screenshot. Did you expect something else?](screenshot.jpg = 200x400)
+<img src="./screenshot.jpg" alt="Screenshot" height="500" />
