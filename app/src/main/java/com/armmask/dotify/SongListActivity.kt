@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.armmask.dotify.SongActivity.Companion.SONG_KEY
 import com.ericchee.songdataprovider.Song
 import com.ericchee.songdataprovider.SongDataProvider
@@ -21,34 +22,33 @@ class SongListActivity : AppCompatActivity() {
         songList.addAll(SongDataProvider.getAllSongs())
 
         val songAdapter = SongListAdapter(songList)
-
+        lateinit var currentSong: Song
         // Set on item Click for the adapter
         songAdapter.onSongClickListener = { someSong: Song ->
+            currentSong = someSong
+            songTitleBtn.text = someSong.title
+        }
 
+        songAdapter.onSongLongClickListener = { currentSong: Song ->
+            Toast.makeText(this, "${currentSong.title} deleted from your playlist", Toast.LENGTH_SHORT).show()
+            songList.remove(currentSong)
+            songAdapter.change(songList)
+        }
+
+        songTitleBtn.setOnClickListener {
             val intent = Intent(this, SongActivity::class.java)
-            intent.putExtra(SONG_KEY, someSong)
+            intent.putExtra(SONG_KEY, currentSong)
             startActivity(intent)
-
-
         }
 
         // endregion list
 
-//        btnChange.setOnClickListener {
-//            val newPeople = songList.apply {
-//                removeAt(0)
-//                removeAt(6)
-//                removeAt(10)
-//                removeAt(6)
-//
-//                shuffle()
-//            }
-//
-//            songAdapter.change(newPeople)
-//
-//        }
-
-
+        btnChange.setOnClickListener {
+            val newSongList = songList.apply {
+                shuffle()
+            }
+            songAdapter.change(newSongList)
+        }
         rvSong.adapter = songAdapter
     }
 }

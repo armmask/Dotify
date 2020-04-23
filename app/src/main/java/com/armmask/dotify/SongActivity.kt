@@ -3,6 +3,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.armmask.dotify.R
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -30,9 +31,16 @@ class SongActivity : AppCompatActivity() {
         tvPlayCount.text = "$randNum plays"
         val imgAlbum = findViewById<ImageView>(R.id.imgAlbumCover)
         imgAlbum.setImageResource(currentSong.largeImageID)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     fun changeUsername(view: View) {
         val tvUsername = findViewById<TextView>(R.id.tvUsername)

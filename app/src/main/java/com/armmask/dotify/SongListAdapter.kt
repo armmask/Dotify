@@ -14,6 +14,7 @@ class SongListAdapter(songListInitial: List<Song>): RecyclerView.Adapter<SongLis
 
     private var songList: List<Song> = songListInitial.toList()  // This is so we create a duplicate of the list passed in
     var onSongClickListener: ((song: Song) -> Unit)? = null
+    var onSongLongClickListener: ((song: Song) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_song, parent, false)
@@ -27,21 +28,15 @@ class SongListAdapter(songListInitial: List<Song>): RecyclerView.Adapter<SongLis
         holder.bind(song, position)
     }
 
-//    fun change(newSongList: List<Song>) {
-//        // Normal way up applying updates to list
-////        listOfPeople = newPeople
-////        notifyDataSetChanged()
-//
-//        // Animated way of applying updates to list
-//        val callback = SongDiffCallback(songList, newSongList)
-//        val diffResult = DiffUtil.calculateDiff(callback)
-//        diffResult.dispatchUpdatesTo(this)
-//
-//        // We update the list
-//        songList = newSongList
-//
-//
-//    }
+    fun change(newSongList: List<Song>) {
+        val callback = SongDiffCallback(songList, newSongList)
+        val diffResult = DiffUtil.calculateDiff(callback)
+        diffResult.dispatchUpdatesTo(this)
+
+        // We update the list
+        songList = newSongList
+        notifyDataSetChanged()
+    }
 
     inner class SongListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val songTitle = itemView.findViewById<TextView>(R.id.title)
@@ -55,6 +50,10 @@ class SongListAdapter(songListInitial: List<Song>): RecyclerView.Adapter<SongLis
 
             itemView.setOnClickListener {
                 onSongClickListener?.invoke(song)
+            }
+            itemView.setOnLongClickListener() {
+                onSongLongClickListener?.invoke(song)
+                return@setOnLongClickListener true
             }
         }
     }
