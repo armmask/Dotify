@@ -26,7 +26,7 @@ class SongListActivity : AppCompatActivity() {
         // Set on item Click for the adapter
         songAdapter.onSongClickListener = { someSong: Song ->
             currentSong = someSong
-            songTitleBtn.text = someSong.title
+            songTitleBtn.text = someSong.title + " - " + someSong.artist
         }
 
         songAdapter.onSongLongClickListener = { currentSong: Song ->
@@ -35,7 +35,7 @@ class SongListActivity : AppCompatActivity() {
             songAdapter.change(songList)
         }
 
-        songTitleBtn.setOnClickListener {
+        playButton.setOnClickListener {
             val intent = Intent(this, SongActivity::class.java)
             intent.putExtra(SONG_KEY, currentSong)
             startActivity(intent)
