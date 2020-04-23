@@ -1,23 +1,35 @@
 package com.armmask.dotify
 import androidx.appcompat.app.AppCompatActivity
+import com.armmask.dotify.R
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.ericchee.songdataprovider.Song
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity() {
+class SongActivity : AppCompatActivity() {
     private var randNum = 0
     private var color = R.color.colorBlack
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val currentSong = intent.getParcelableExtra<Song>(SONG_KEY)
+        val stitle = findViewById<TextView>(R.id.songTitle)
+        songTitle.text = currentSong.title
+        tvArtistNames.text = currentSong.artist
+
+
         randNum = Random.nextInt(0, 9999999)
         val tvPlayCount = findViewById<TextView>(R.id.tvPlayCount)
         tvPlayCount.text = "$randNum plays"
         val imgAlbum = findViewById<ImageView>(R.id.imgAlbumCover)
+        imgAlbum.setImageResource(currentSong.largeImageID)
     }
 
 
@@ -58,4 +70,11 @@ class MainActivity : AppCompatActivity() {
     fun toastNext(view: View) {
         Toast.makeText(this, "Skipping to next track", Toast.LENGTH_SHORT).show()
     }
+
+    companion object {
+        // Keys for intents
+        const val SONG_KEY = "song_key"
+
+    }
 }
+
