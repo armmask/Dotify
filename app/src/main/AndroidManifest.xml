@@ -9,14 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SongListActivity" android:label="All Songs">
+        <activity android:name=".activities.MainFragHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SongActivity"></activity>
+        <activity
+            android:name=".archive.SongListActivity"
+            android:label="All Songs">
+        </activity>
+        <activity android:name=".archive.SongActivity" />
     </application>
 
 </manifest>

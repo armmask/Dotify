@@ -1,4 +1,4 @@
-package com.armmask.dotify
+package com.armmask.dotify.archive
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.armmask.dotify.R
 import com.ericchee.songdataprovider.Song
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random

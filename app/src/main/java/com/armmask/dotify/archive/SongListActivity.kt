@@ -1,11 +1,12 @@
-package com.armmask.dotify
+package com.armmask.dotify.archive
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.armmask.dotify.SongActivity.Companion.SONG_KEY
-import com.armmask.dotify.SongActivity.Companion.SONG_LIST_KEY
+import com.armmask.dotify.R
+import com.armmask.dotify.SongListAdapter
+import com.armmask.dotify.archive.SongActivity.Companion.SONG_KEY
 import com.ericchee.songdataprovider.Song
 import com.ericchee.songdataprovider.SongDataProvider
 import kotlinx.android.synthetic.main.activity_song_list.*
