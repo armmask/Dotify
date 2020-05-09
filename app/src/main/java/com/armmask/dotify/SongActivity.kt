@@ -1,8 +1,6 @@
 package com.armmask.dotify
 import androidx.appcompat.app.AppCompatActivity
-import com.armmask.dotify.R
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -15,13 +13,11 @@ import kotlin.random.Random
 
 class SongActivity : AppCompatActivity() {
     private var randNum = 0
-    private var color = R.color.colorBlack
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val currentSong = intent.getParcelableExtra<Song>(SONG_KEY)
-        val stitle = findViewById<TextView>(R.id.songTitle)
         songTitle.text = currentSong.title
         tvArtistNames.text = currentSong.artist
 
@@ -71,17 +67,22 @@ class SongActivity : AppCompatActivity() {
         tvPlayCount.text = "$randNum plays"
     }
 
+    fun makeToast(str: String) {
+        Toast.makeText(this, "Skipping to $str track", Toast.LENGTH_SHORT).show()
+    }
+
     fun toastPrev(view: View) {
-        Toast.makeText(this, "Skipping to previous track", Toast.LENGTH_SHORT).show()
+        makeToast("previous")
     }
 
     fun toastNext(view: View) {
-        Toast.makeText(this, "Skipping to next track", Toast.LENGTH_SHORT).show()
+        makeToast("next")
     }
 
     companion object {
         // Keys for intents
         const val SONG_KEY = "song_key"
+        const val SONG_LIST_KEY = "song_list_key"
 
     }
 }
