@@ -95,5 +95,9 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
         return super.onOptionsItemSelected(item)
     }
 
+    fun getSongFragment():SongFragment {
+        return supportFragmentManager.findFragmentByTag(SongFragment.TAG) as SongFragment
+    }
+
 
 }
