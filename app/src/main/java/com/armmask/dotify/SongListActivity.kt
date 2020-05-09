@@ -33,6 +33,7 @@ class SongListActivity : AppCompatActivity() {
             Toast.makeText(this, "${currentSong.title} deleted from your playlist", Toast.LENGTH_SHORT).show()
             songList.remove(currentSong)
             songAdapter.change(songList)
+
         }
 
         playButton.setOnClickListener {
