@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.armmask.dotify.OnSongClickListener
 import com.armmask.dotify.R
 import com.armmask.dotify.SongListAdapter
+import com.armmask.dotify.activities.MainFragHandlerActivity
 import com.ericchee.songdataprovider.Song
 import kotlinx.android.synthetic.main.fragment_song_list.*
 
@@ -21,22 +22,26 @@ class SongListFragment: Fragment() {
     private lateinit var songList: MutableList<Song>
 
     companion object {
+        val TAG: String = SongFragment::class.java.simpleName
         const val SONG_LIST_KEY = "song_list_key"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        var tempList: List<Song>? = null
-
-        arguments?.let {
-            tempList = it.getParcelableArrayList<Song>(SONG_LIST_KEY)
+        if (savedInstanceState != null) {
+            with(savedInstanceState) {
+                songList = getParcelableArrayList<Song>(SONG_LIST_KEY) as MutableList<Song>
+            }
+        } else {
+            var tempList: List<Song>? = null
+            arguments?.let {
+                tempList = it.getParcelableArrayList<Song>(SONG_LIST_KEY)
+            }
+            val immutableList = tempList
+            if (immutableList != null) {
+                songList = immutableList as MutableList<Song>
+            }
         }
-
-        if (tempList != null) {
-            songList = tempList as MutableList<Song>
-        }
-
     }
 
     override fun onAttach(context: Context) {
@@ -72,11 +77,15 @@ class SongListFragment: Fragment() {
         rvSong.adapter = songListAdapter
     }
 
-    fun listShuffler() {
-        val newSongList = songList.apply {
-            shuffle()
-        }
-        songListAdapter.change(newSongList)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState?.putParcelableArrayList(SONG_LIST_KEY, ArrayList(songList))
     }
 
+    fun listShuffler() {
+        songList.apply {
+            shuffle()
+        }
+        songListAdapter.change(songList)
+    }
 }

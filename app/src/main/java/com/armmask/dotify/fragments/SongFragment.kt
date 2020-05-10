@@ -20,9 +20,21 @@ class SongFragment : Fragment() {
     companion object {
         val TAG: String = SongFragment::class.java.simpleName
         const val SONG_KEY = "song_key"
+        const val RAND_NUM = "randNum"
     }
     private var randNum = 0
     private  var currentSong: Song? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            with(savedInstanceState) {
+                randNum = getInt(RAND_NUM)
+            }
+        } else {
+            randNum = Random.nextInt(0, 9999999)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,12 +52,8 @@ class SongFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         currentSong?.let {
-            songTitle.text = it.title
-            tvArtistNames.text = it.artist
-            imgAlbumCover.setImageResource(it.largeImageID!!)
+            updateSong(it)
         }
-        randNum = Random.nextInt(0, 9999999)
-        tvPlayCount.text = "$randNum plays"
         imgbtnPrev.setOnClickListener{v: View? ->
             v?.let {
                 tPrev(it)
@@ -61,17 +69,19 @@ class SongFragment : Fragment() {
                 incrementPlayCount(v)
             }
         }
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if (item.itemId == android.R.id.home) {
-//            finish()
-//            return true
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
+    fun updateSong(it: Song) {
+        songTitle.text = it.title
+        tvArtistNames.text = it.artist
+        imgAlbumCover.setImageResource(it.largeImageID!!)
+        tvPlayCount.text = "$randNum plays"
+    }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(RAND_NUM, randNum)
+    }
 
 
 

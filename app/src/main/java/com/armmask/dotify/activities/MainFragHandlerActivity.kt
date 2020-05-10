@@ -3,6 +3,7 @@ package com.armmask.dotify.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import com.armmask.dotify.OnSongClickListener
@@ -15,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_main_frag_handler.*
 
 class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
 
-    lateinit var currentSong: Song;
+    private var currentSong: Song? = null;
     private lateinit var songList: MutableList<Song>
     private lateinit var songFragment: SongFragment
     private lateinit var songListFragment: SongListFragment
@@ -24,9 +25,93 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_frag_handler)
 
-        songList = mutableListOf<Song>()
-        songList.addAll(SongDataProvider.getAllSongs())
+        if (savedInstanceState != null) {
+            var tempSong: Song? = null
+            var tempList: List<Song>? = null
+            with(savedInstanceState) {
+                tempSong = getParcelable(STATE_SONG)
+                tempList = getParcelableArrayList(STATE_LIST)
+            }
+            tempSong?.let {
+                val tempSong = it
+                currentSong = tempSong
+                updateMiniPlayer(tempSong)
+            }
+            tempList?.let {
+                songList = it as MutableList<Song>
+            }
+        } else {
+            songList = mutableListOf<Song>()
+            songList.addAll(SongDataProvider.getAllSongs())
+            createPlayList()
+        }
 
+
+
+        playButton.setOnClickListener {
+            createPlayer()
+        }
+
+        // endregion list
+
+        btnChange.setOnClickListener {
+            getSongListFragment().listShuffler()
+        }
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            Log.i("armmask", supportFragmentManager.backStackEntryCount.toString())
+            enablePlayerBack()
+        }
+
+        enablePlayerBack()
+
+    }
+
+
+    override fun onSongClicked(song: Song) {
+        updateMiniPlayer(song)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            supportFragmentManager.popBackStack()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState?.run {
+            putParcelable(STATE_SONG, currentSong)
+            putParcelableArrayList(STATE_LIST, ArrayList(songList))
+            Log.i("armmask", supportFragmentManager.backStackEntryCount.toString())
+        }
+    }
+
+    private fun getSongFragment():SongFragment {
+        return supportFragmentManager.findFragmentByTag(SongFragment.TAG) as SongFragment
+    }
+
+    private fun getSongListFragment():SongListFragment {
+        return supportFragmentManager.findFragmentByTag(SongListFragment.TAG) as SongListFragment
+    }
+
+    private fun createPlayer() {
+        songFragment = SongFragment()
+        val songBundle = Bundle().apply {
+            putParcelable(SongFragment.SONG_KEY, currentSong)
+        }
+        songFragment.arguments = songBundle
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragContainer, songFragment)
+            .addToBackStack(SongFragment.TAG)
+            .commit()
+    }
+
+    private fun createPlayList() {
         songListFragment = SongListFragment()
         val songListBundle = Bundle().apply {
             putParcelableArrayList(SongListFragment.SONG_LIST_KEY, ArrayList(songList))
@@ -35,37 +120,8 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
 
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.fragContainer, songListFragment)
+            .add(R.id.fragContainer, songListFragment, SongListFragment.TAG)
             .commit()
-
-        playButton.setOnClickListener {
-            playButton.visibility = View.GONE
-            songFragment = SongFragment()
-            val songBundle = Bundle().apply {
-                putParcelable(SongFragment.SONG_KEY, currentSong)
-            }
-            songFragment.arguments = songBundle
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.fragContainer, songFragment)
-                .addToBackStack(SongFragment.TAG)
-                .commit()
-        }
-
-        // endregion list
-
-        btnChange.setOnClickListener {
-            songListFragment.listShuffler()
-        }
-
-        supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            } else {
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            }
-        }
-
     }
 
     private fun updateMiniPlayer(song: Song) {
@@ -73,30 +129,20 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
         songTitleBtn.text = song.title + " - " + song.artist
     }
 
-    override fun onSongClicked(song: Song) {
-        updateMiniPlayer(song)
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        playButton.visibility = View.VISIBLE
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            supportFragmentManager
-                .beginTransaction()
-                .remove(songFragment)
-                .commit()
+    private fun enablePlayerBack() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            playButton.visibility = View.GONE
+        } else {
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
             playButton.visibility = View.VISIBLE
-            return true
         }
-        return super.onOptionsItemSelected(item)
     }
 
-    fun getSongFragment():SongFragment {
-        return supportFragmentManager.findFragmentByTag(SongFragment.TAG) as SongFragment
+    companion object {
+        val STATE_SONG = "currentSong"
+        val STATE_LIST = "songList"
+        val STATE_INT = "stackSize"
     }
 
 
