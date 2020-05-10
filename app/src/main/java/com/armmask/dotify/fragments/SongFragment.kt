@@ -16,14 +16,14 @@ import kotlinx.android.synthetic.main.fragment_song.*
  * A simple [Fragment] subclass.
  */
 class SongFragment : Fragment() {
+    private var randNum = 0
+    private  var currentSong: Song? = null
 
     companion object {
         val TAG: String = SongFragment::class.java.simpleName
         const val SONG_KEY = "song_key"
         const val RAND_NUM = "randNum"
     }
-    private var randNum = 0
-    private  var currentSong: Song? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +40,6 @@ class SongFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-
         arguments.let { it ->
             currentSong = it?.getParcelable<Song>(SONG_KEY)
         }

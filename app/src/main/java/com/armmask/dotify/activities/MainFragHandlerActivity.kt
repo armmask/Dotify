@@ -1,6 +1,5 @@
 package com.armmask.dotify.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +19,12 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
     private lateinit var songList: MutableList<Song>
     private lateinit var songFragment: SongFragment
     private lateinit var songListFragment: SongListFragment
+
+    companion object {
+        val STATE_SONG = "currentSong"
+        val STATE_LIST = "songList"
+        val STATE_INT = "stackSize"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,13 +51,9 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
             createPlayList()
         }
 
-
-
         playButton.setOnClickListener {
             createPlayer()
         }
-
-        // endregion list
 
         btnChange.setOnClickListener {
             getSongListFragment().listShuffler()
@@ -71,7 +72,6 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
     override fun onSongClicked(song: Song) {
         updateMiniPlayer(song)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
@@ -138,12 +138,4 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
             playButton.visibility = View.VISIBLE
         }
     }
-
-    companion object {
-        val STATE_SONG = "currentSong"
-        val STATE_LIST = "songList"
-        val STATE_INT = "stackSize"
-    }
-
-
 }
