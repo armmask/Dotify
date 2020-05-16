@@ -1,6 +1,6 @@
 package com.armmask.dotify
 
-import com.ericchee.songdataprovider.Song
+import com.armmask.dotify.models.Song
 
 interface OnSongClickListener {
     fun onSongClicked(song: Song)

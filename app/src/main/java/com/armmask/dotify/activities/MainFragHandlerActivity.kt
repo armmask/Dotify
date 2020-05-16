@@ -5,12 +5,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.armmask.dotify.OnSongClickListener
 import com.armmask.dotify.R
+import com.armmask.dotify.models.Song
 import com.armmask.dotify.fragments.SongFragment
 import com.armmask.dotify.fragments.SongListFragment
-import com.ericchee.songdataprovider.Song
-import com.ericchee.songdataprovider.SongDataProvider
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main_frag_handler.*
 
 class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
@@ -24,12 +29,14 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
         val STATE_SONG = "currentSong"
         val STATE_LIST = "songList"
         val STATE_INT = "stackSize"
+        val LINK = "https://raw.githubusercontent.com/echeeUW/codesnippets/master/musiclibrary.json"
+        val TAG = "armmask"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_frag_handler)
-
+        fetchWithVolley()
         if (savedInstanceState != null) {
             var tempSong: Song? = null
             var tempList: List<Song>? = null
@@ -46,9 +53,7 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
                 songList = it as MutableList<Song>
             }
         } else {
-            songList = mutableListOf<Song>()
-            songList.addAll(SongDataProvider.getAllSongs())
-            createPlayList()
+            fetchWithVolley()
         }
 
         playButton.setOnClickListener {
@@ -138,4 +143,28 @@ class MainFragHandlerActivity : AppCompatActivity(), OnSongClickListener {
             playButton.visibility = View.VISIBLE
         }
     }
+
+    private fun fetchWithVolley() {
+        val queue = Volley.newRequestQueue(this)
+        var list = mutableListOf<Song>()
+        val request = JsonObjectRequest(Request.Method.GET, LINK, null,
+        Response.Listener { response ->
+            val jsonArray = response.getJSONArray("songs")
+            repeat(jsonArray.length()) { index ->
+                val songJson = jsonArray.getJSONObject(index)
+                Log.i(TAG, songJson.toString())
+                val gson = Gson()
+                val song = gson.fromJson(songJson.toString(), Song::class.java)
+                list.add(song)
+            }
+            songList = list
+            createPlayList()
+        },
+        Response.ErrorListener {error ->
+            Toast.makeText(this, error.toString(), Toast.LENGTH_LONG)
+        })
+        queue.add(request)
+    }
+
+
 }

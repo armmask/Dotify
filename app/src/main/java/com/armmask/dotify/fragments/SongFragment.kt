@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import android.widget.*
 
 import com.armmask.dotify.R
-import com.ericchee.songdataprovider.Song
+import com.armmask.dotify.models.Song
 import kotlin.random.Random
 import kotlinx.android.synthetic.main.fragment_song.*
+import com.squareup.picasso.Picasso
 
 /**
  * A simple [Fragment] subclass.
@@ -72,7 +73,7 @@ class SongFragment : Fragment() {
     fun updateSong(it: Song) {
         songTitle.text = it.title
         tvArtistNames.text = it.artist
-        imgAlbumCover.setImageResource(it.largeImageID!!)
+        Picasso.get().load(it.largeImageURL).into(imgAlbumCover);
         tvPlayCount.text = "$randNum plays"
     }
 

@@ -10,8 +10,7 @@ import androidx.fragment.app.Fragment
 import com.armmask.dotify.OnSongClickListener
 import com.armmask.dotify.R
 import com.armmask.dotify.SongListAdapter
-import com.armmask.dotify.activities.MainFragHandlerActivity
-import com.ericchee.songdataprovider.Song
+import com.armmask.dotify.models.Song
 import kotlinx.android.synthetic.main.fragment_song_list.*
 
 class SongListFragment: Fragment() {
