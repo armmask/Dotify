@@ -1,7 +1,6 @@
 # Dotify Coded by Arman *K A Z I*<sup>tm</sup>
-Info 448 SP 20 Android Dev Homework 3.
-Replaced Activities with suitable fragments
-Added landscape mode
+Info 448 SP 20 Android Dev Homework 4.
+Used songList api
 
 ## Extra Credit
 N/A
